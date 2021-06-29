@@ -27,7 +27,6 @@ else:
   output_main = os.path.join(results_main, args.run_id, 'top_malignant_imgs')
 
 misc.verify_dir_exists(output_main)
-#print('\nOUTPUT MAIN: {}\n'.format(output_main))
 print('\ntransfer command: scp -r alevine@xfer.bcgsc.ca:{} .\n'.format(
       output_main))
 
