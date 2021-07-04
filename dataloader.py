@@ -263,13 +263,10 @@ def save_sample_imgs(save_folder, dataset, batch_size=8, num_batches=3,
 
 # ———————————————————————————————————————————————————————————————————————
 if __name__ == "__main__":
-  # NOTE: for image viewing to work, this currently has to be run on the devbox, not dgx
-  root_dir = '/projects/pathology_char/pathology_char_results/mesothelioma/'
+  root_dir = '/path/to/dir'
   tile_dir = os.path.join(root_dir, 'images')
-  img_split = misc.load_pkl(os.path.join(root_dir, 
-                              'results/6-2-2020/img_split.pkl'))
-  img_to_label = misc.load_pkl(os.path.join(root_dir, 
-                              'results/6-2-2020/img_to_label.pkl'))
+  img_split = misc.load_pkl(os.path.join(root_dir, 'dir/img_split.pkl'))
+  img_to_label = misc.load_pkl(os.path.join(root_dir, 'dir/img_to_label.pkl'))
   img_list = img_split['1']['train']
 
   dataset = SlideDataset(img_list, img_to_label, {'benign':0, 'tumor':1}, 
