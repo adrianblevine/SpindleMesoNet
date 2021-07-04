@@ -88,11 +88,8 @@ class SlideDataset(Dataset):
     if self.transforms:
       img = self.transforms(img)
     img = img.reshape((3, self.img_size, self.img_size))
-    #slide_id = _get_slide_id(img_path)
     label = _get_label_from_filepath(img_path)
-    #label = self.img_to_label[os.path.basename(img_path)]
     label = torch.LongTensor(np.array(self.label_to_value[label]))
-    #assert _get_label_from_filename(os.path.basename(img_path)) == label
     if self._debug_mode:
       print(img.shape, label.shape, label)
     return img, label
@@ -273,9 +270,8 @@ if __name__ == "__main__":
                                512, 16, transforms=transforms.ToTensor())
 
   save_folder = os.path.join(root_dir, 'dataloader_debugging')
-  if not os.path.exists(save_folder): os.makedirs(save_folder)
-  #for i in range(20):
-  #  save_sample_imgs(save_folder, dataset)
+  if not os.path.exists(save_folder): 
+    os.makedirs(save_folder)
   
 
   dataloader = create_dataloader('test', img_list, img_to_label, 

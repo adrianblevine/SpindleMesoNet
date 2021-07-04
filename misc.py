@@ -58,10 +58,8 @@ class Logger(object):
 def start_logger(log_file):
   if os.path.exists(log_file): os.remove(log_file)
   sys.stdout = Logger(log_file)
-  #sys.stderr = Logger(log_file)
 
 def end_logger():
-  #sys.stdout.logfile.close()
   sys.stdout = sys.__stdout__ #.terminal
   sys.stderr = sys.__stderr__ #.terminal
 
@@ -112,14 +110,11 @@ def init_output_logging(log_file, log_stderr=True):
     if output_logger is None:
         output_logger = OutputLogger()
         output_logger.set_log_file(log_file, mode='wt')
-        sys.stdout = TeeOutputStream([sys.stdout, output_logger], autoflush=True)
+        sys.stdout = TeeOutputStream([sys.stdout, output_logger], 
+                                      autoflush=True)
         if log_stderr:
-          sys.stderr = TeeOutputStream([sys.stderr, output_logger], autoflush=True)
-
-#def set_output_log_file(filename, mode='wt'):
-#    if output_logger is not None:
-#        output_logger.set_log_file(filename, mode)
-#
+          sys.stderr = TeeOutputStream([sys.stderr, output_logger], 
+                                       autoflush=True)
 
 
 # —————————————————————————————————————————————————————————————————————————————
@@ -129,7 +124,6 @@ def set_gpu(gpu):
   """ sets only the specificed GPU(s) as visible
   # Args: gpu(s) as a single integer or integers separated by commas (e.g. 0,3,5)
   """
-#  os.environ['QT_QPA_PLATFORM']='offscreen'
   os.environ['CUDA_DEVICE_ORDER']='PCI_BUS_ID'
   os.environ['CUDA_VISIBLE_DEVICES']=gpu
 
@@ -145,7 +139,8 @@ def set_n_workers(worker_dict = {'dgx': 24, 'env': 8}):
 # —————————————————————————————————————————————————————————————————————————————
 # image processing related functions
 
-def evaluate_tile_quality(x, min_pixel_mean=50, max_pixel_mean=230, max_pixel_min=95):
+def evaluate_tile_quality(x, min_pixel_mean=50, max_pixel_mean=230, 
+                          max_pixel_min=95):
   """ Determine if image patch meets specificed cutoffs for pixel values
 
   Image must be scaled from 0-255
@@ -258,13 +253,6 @@ def get_coords(x):
     print('unable to get coordinates from', x)
     return 999999, 999999
 
-#def get_label(x):
-#  if x.startswith('BM_spin'):
-#    return 'benign'
-#  elif x.startswith('MM_sarc'):
-#    return 'tumor'
-
-
 # —————————————————————————————————————————————————————————————————————————————
 
 # run configuration management
@@ -280,7 +268,6 @@ def parse_config_file(config_file):
     v = v.strip("'")
     if v.isdigit():
       v = int(v)
-    #elif v.startswith("'"):
     config[k] = v
   return config
 

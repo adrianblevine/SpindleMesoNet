@@ -40,16 +40,13 @@ def print_predictions(preds, labels, cases):
   for i in range(len(preds)):
     print('{}:\t{:.03}\t({})'.format(cases[i], preds[i], int(labels[i])) )
  
-
 def plot_roc_curve_test(preds, labels, folder=None, test_set=None):
   preds = preds.flatten()
   labels = labels.flatten()
   labels.astype('int')
   fpr, tpr, _ = metrics.roc_curve(labels, preds)
   plt.title('Receiver Operating Characteristic')
-  plt.plot(fpr, tpr,) #'b', label = 'AUC = %0.2f' % roc_auc)
-  #plt.legend(loc = 'lower right')
-  #plt.plot([0, 1], [0, 1],'r--')
+  plt.plot(fpr, tpr,) 
   plt.xlim([-0.01, 1.])
   plt.ylim([0, 1.01])
   plt.ylabel('True Positive Rate')
@@ -58,7 +55,6 @@ def plot_roc_curve_test(preds, labels, folder=None, test_set=None):
     save_path=os.path.join(folder, test_set + '.png')
     plt.savefig(save_path)
     print('saved AUC curve as:', save_path)
-  #plt.show()
 
 
 def plot_roc_curve_crossval(preds, labels, folder=None):
@@ -68,9 +64,8 @@ def plot_roc_curve_crossval(preds, labels, folder=None):
     run_labels = labels[i].flatten()
     run_labels.astype('int')
     fpr, tpr, _ = metrics.roc_curve(run_labels, run_preds)
-    plt.plot(fpr, tpr, label='Cross-val run {}'.format(i+1)) #'b', label = 'AUC = %0.2f' % roc_auc)
+    plt.plot(fpr, tpr, label='Cross-val run {}'.format(i+1)) 
   plt.legend(loc = 'lower right')
-  #plt.plot([0, 1], [0, 1],'r--')
   plt.xlim([-0.01, 1.])
   plt.ylim([0, 1.01])
   plt.ylabel('True Positive Rate')
@@ -79,7 +74,6 @@ def plot_roc_curve_crossval(preds, labels, folder=None):
     save_path=os.path.join(folder, 'crossval.png')
     plt.savefig(save_path)
     print('saved AUC curve as:', save_path)
-  #plt.show()
 
 
 # ——————————————————————————————————————————————————————————————————————
@@ -136,8 +130,6 @@ class EvaluatePredictions():
       dict_['acc'].append(metrics.accuracy_score(labels, binary))
       dict_['sensitivity'].append(metrics.recall_score(labels, binary)) # sens
       dict_['specificity'].append(self.specificity(labels, binary)) # sens
-      #dict_['precision'].append(metrics.precision_score(labels, binary)) # PPV
-      #dict_['f1'].append(metrics.f1_score(labels, binary))
 
     if self.print_output:
       print('\n\nMETRICS:')
@@ -173,7 +165,6 @@ def save_histogram(data, title, save_dir):
   plt.title(title)
   plt.ylabel('N tiles')
   plt.xlabel('value')
-  #plt.show()
   plt.savefig(os.path.join(save_dir, title + '.jpg'))
   plt.clf()
 
@@ -307,21 +298,6 @@ def evaluate_cross_val_runs(run_dir, case_split, threshold, prediction_method,
     cv_preds.append(preds['val'])
     cv_labels.append(labels['val'])
 
-  # for each prediction method calculate average metrics, including
-  # std dev for AUC
-#  print('\nAverage test metrics values:')
-#  for idx in full_metrics.keys():
-#    run_metrics = np.array(full_metrics[idx]).reshape((-1,1))
-#    try:
-#      pred_metrics = np.concatenate((pred_metrics, run_metrics), 1)
-#      aucs = np.concatenate((aucs, run_metrics[0]))
-#    except:
-#      pred_metrics = run_metrics
-#      aucs= run_metrics[0]
-#  avg_metrics = [round(x, 3) for x in np.mean(pred_metrics[1:], 1)]
-#  auc_mean = round(statistics.mean(aucs), 3)
-#  auc_std = round(statistics.stdev(aucs), 3)
-#
   EvaluatePredictions(np.concatenate(cv_preds), np.concatenate(cv_labels), 
                       threshold).run()
   plot_roc_curve_crossval(cv_preds, cv_labels)
@@ -404,7 +380,7 @@ if __name__ == "__main__":
   parser = argparse.ArgumentParser()
   # locate run folder
   parser.add_argument('--runs_main', 
-      default='/home/alevine/mesothelioma/results')
+      default='/path/to/dir/results')
   parser.add_argument('--run_id', default=None,
       help="Saved model to use for generating predictions")
   parser.add_argument('--cv_idx', default=None, type=int)

@@ -29,7 +29,7 @@ from tissue_detection import TissueDetection
 import misc
 
 FLAGS = []
-ROOT_DIR = '/projects/pathology_char/pathology_char_results'
+ROOT_DIR = '/path/to/dir/'
 
 # list all possible categories in annotations, while export_categories
 # only includes image labels to be saved
@@ -151,9 +151,6 @@ class SlideTiling(TissueDetection):
             exports += 1
           else: 
             excluded += 1
-            #if excluded % 100 == 0:
-            #  tile.save(os.path.join(self.export_dir, 
-            #                         'EXCL-' + file_name[:-3] + 'jpg'))
         x += step_size
       x = 0
       y += step_size
@@ -245,9 +242,6 @@ class SlideTiling(TissueDetection):
               img_exports[category] += 1
             else: 
               excluded += 1
-              #if excluded % 100 == 0:
-              #  tile.save(os.path.join(self.export_dir, 
-              #                         'EXCL-' + file_name[:-3] + 'jpg'))
         x += xstep_size
       x = xmin
       y += ystep_size
@@ -281,11 +275,7 @@ class SlideTiling(TissueDetection):
             coords = []
             for i in range(len(x)):
               coords.append((x[i], y[i]))
-            #try:
             self.annotations[category].append(coords)
-            #except KeyError:
-            #  self.annotations[category] = []
-            #  self.annotations[category].append(coords)
           else:
             pass
       # json annotation export with qupath 0.2
@@ -315,7 +305,6 @@ class SlideTiling(TissueDetection):
     except TypeError:
       self.bounding_box = (0, 999999, 0, 999999)
 
-    # need to set pixel values for each category
     self.category_values = {self.annotation_categories[i]: i + 1 
                               for i in range(len(self.annotation_categories))}
     height, width = self.slide_obj.dimensions[0:2]
@@ -496,9 +485,6 @@ def process_folder(FLAGS):
     misc.verify_dir_exists(FLAGS.mask_save_dir)
   
   date_string = datetime.datetime.now().strftime('%Y-%m-%d-%H%M')
-  #log_file = os.path.join(FLAGS.export_dir, 
-  #                        'tiling_logs_{}.txt'.format(date_string))
-  #misc.init_output_logging(log_file)
   print('\n', FLAGS)
   
   if FLAGS.slide_list_file is not None:
@@ -565,7 +551,6 @@ def process_folder(FLAGS):
   else:
     # tiling without pooling, mainly for debugging
     total_exports = 0
-    #slide_list= [os.path.join(FLAGS.slide_dir, 'MM_sarc_VS11_18879_A1.svs')]
     for idx, slide in enumerate(slide_list):
       exports = process_slide(idx=idx, slide_list=slide_list, 
                               process_kwargs=process_kwargs),

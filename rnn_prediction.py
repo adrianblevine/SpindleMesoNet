@@ -36,7 +36,7 @@ import misc
 
 FLAGS = []
 
-main_dir = '/home/alevine/mesothelioma/'
+main_dir = '/path/to/dir/'
 
 # ——————————————————————————————————————————————————————————————————————
 # helper functions
@@ -194,8 +194,6 @@ def train_loop(epoch, rnn, loader, criterion, optimizer, device):
   tp, tn, fp, fn = 0, 0, 0, 0
 
   for i,(inputs,label,_) in enumerate(loader):
-    #print('Training - Epoch: {}\tBatch: [{}/{}]'.format(epoch+1, i+1, 
-    #      len(loader)), flush=True)
     batch_size = inputs.size(0)
     len_seq = inputs.size(1)
     rnn.zero_grad()
@@ -214,12 +212,6 @@ def train_loop(epoch, rnn, loader, criterion, optimizer, device):
     running_loss += loss.item()*batch_size
     acc, sens, spec, F1, tp, tn, fp, fn = running_metrics(pred, label,
                                           tp, tn, fp, fn)
-    #try: 
-    #  labels = np.concatenate((labels, label.cpu()))
-    #  preds = np.concatenate((preds, pred.cpu()))
-    #except NameError:
-    #  labels = np.array(label.cpu())
-    #  preds = np.array(pred.cpu())
 
   loss = running_loss/len(loader.dataset)
   metrics = {'loss': round(loss, 3),
@@ -269,7 +261,6 @@ def test_loop(epoch, rnn, loader, criterion, device, mode='Val'):
              'F1': round(F1, 3),
              }  
   print('{} - Epoch: {}\t'.format(mode, epoch+1), metrics, flush=True)
-  # TODO conver to class 
   _ = evaluate_predictions(preds, labels, threshold=0.5, print_output=True)
 
   return loss, acc, F1
@@ -307,7 +298,6 @@ def rnn_main(folders, fv_length, test_set='val', n_process=1,  **kwargs):
   val_loader = torch.utils.data.DataLoader(val_dset, shuffle=True,
                                              **dataloader_kwargs)
 
-  # TODO will need to set for different test sets
   test_data_dir = folders.rnn_data.test
   test_dset = RNN_data(test_data_dir, os.listdir(test_data_dir))
   test_loader = torch.utils.data.DataLoader(test_dset, shuffle=False,
@@ -362,7 +352,6 @@ def rnn_main(folders, fv_length, test_set='val', n_process=1,  **kwargs):
 
 def rnn_prediction(folders, case_split, fv_length, save_incorrect=False, 
                    n_process=1, **kwargs):
-             #subdir,  region_img_dir, img_save_dir,
   print('\nRunning RNN predictions:')
 
   # initiate RNN and load checkpoint
@@ -560,10 +549,6 @@ class RNNPreprocessor():
     softmax = softmax.reshape((-1,1))
     fv = pred_dict['fv']
     
-    #_check_alignment(softmax, fv)
-    # zip softmax and feature vectors together 
-    #dict_ = {np.array_str(softmax[i])[1:-1]: fv[i] 
-    #        for i in range(len(softmax))}
     z = np.array(list(zip(softmax,fv)))
     # rank feature vectors by softmax value and unzip
     z = z[z[:,0].argsort()]
@@ -573,10 +558,6 @@ class RNNPreprocessor():
       # take top N feature vectors
       full_fv = np.array(full_fv)
       fv = full_fv[-topN:, :]
-      
-      #if dimensionality_reduction:
-      #  pca = decomposition.PCA(n_components=10)
-      #  fv = pca.fit_transform(fv)
       
       # reshape and concatenate full fv array
       save_dict = {'inputs': fv,
@@ -759,7 +740,6 @@ def evaluate_run(preds, labels, threshold=0.99):
   metrics = {} 
   for mode in preds.keys():
     print(mode)
-    # TODO convert to class
     metrics[mode] = evaluate_predictions(preds[mode], labels[mode], 
                                    threshold=threshold, print_output=True)
   return metrics['test']
@@ -786,8 +766,6 @@ def eval_test_set(config, folders):
     if config.predict:
       preds, labels, cases = predict_run(run_folders, split,
                                          **config)
-      # TODO pick run specific threshold
-      # TODO consider removing predictions with low confidence
       if isinstance(config.threshold, list):
         threshold_value = config.threshold[i-1]
       else:
@@ -846,7 +824,6 @@ def eval_cross_val_runs(config, folders):
                                                   labels)
       else:  
         best_threshold = config.threshold
-     # full_metrics[idx] = evaluate_run(preds, labels, best_threshold)
   
   if config.evaluate:
     EvaluatePredictions(np.concatenate(full_preds),
@@ -881,8 +858,6 @@ def rnn_hyperparameter_search(run_subdirs, subdir, case_split, threshold,
         os.remove(os.path.join(subdir, 'rnn_checkpoint_best.pth'))
       except FileNotFoundError: 
         pass
-      #prediction_dirs = os.path.join(subdir, 'predictions_cv/image')
-      # TODO need to split predict and evaluate runs (9/10/20)
       full_metrics[i] = evaluate_run(subdir, case_split[str(i)],
                                      threshold, params)
       sys.stdout = sys.__stdout__

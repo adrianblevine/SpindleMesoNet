@@ -19,10 +19,10 @@ import cv2
 import misc
 from slide_prediction import get_label_from_filename
 
-slides_main = '/projects/pathology_char/pathology_char_results/mesothelioma/slides/'
+slides_main = '/path/to/dir/slides/'
 slide_dirs = {
-  'tumor': os.path.join(slides_main, 'malig_meso_sarc'),
-  'benign': os.path.join(slides_main, 'benign_meso_spin'),
+  'tumor': os.path.join(slides_main, 'tumor'),
+  'benign': os.path.join(slides_main, 'benign'),
 }
 
 TILE_DIM = 512
@@ -50,14 +50,12 @@ def make_heatmap(slide, tile_list, data, save_dir, rescale=True,
   # set size of final image
   slide_img = np.array(slide_obj.get_thumbnail((xdim*8, ydim*8)))
   preds = np.transpose(pred_arr)
-  #import pdb;pdb.set_trace()
   if rescale:
     # rescale so that 0.9 and below=0 and then normalize
     preds[preds < 0.9] = 0.9
     preds = (preds-0.9)/(1.0-0.9)
   preds = (preds *255).astype('uint8')
   heatmap = cv2.applyColorMap(preds, cv2.COLORMAP_VIRIDIS)
-  #heatmap = (heatmap *255).astype('uint8')
   dim1, dim2 = slide_img.shape[0], slide_img.shape[1]
   heatmap = cv2.resize(heatmap, (dim2, dim1))
   fin = cv2.addWeighted(slide_img, 0.6, heatmap, 0.4, 0)
@@ -101,7 +99,6 @@ def main(FLAGS):
   case_split = misc.load_pkl(os.path.join(runs_main, FLAGS.run_id, 
                                           'case_split.pkl'))
   heatmap_main = os.path.join(runs_main, FLAGS.run_id, 'heatmaps')
-  print('transfer: scp -r alevine@xfer.bcgsc.ca:{} .'.format(heatmap_main))
   misc.verify_dir_exists(heatmap_main)
   if FLAGS.cv_run:
     subdir = os.path.join(runs_main, FLAGS.run_id, 
@@ -113,9 +110,9 @@ def main(FLAGS):
 
 
 if __name__ == "__main__":
-  runs_main = '/home/alevine/mesothelioma/results'
+  runs_main = '/path/to/dir/results'
   parser = argparse.ArgumentParser()
-  parser.add_argument('--run_id', default='10-23-20-normjit',)
+  parser.add_argument('--run_id')
   parser.add_argument('--cv_run', default=None, type=int)
   parser.add_argument('--n_process', default=1, type=int)
   parser.add_argument('--remove_existing', action='store_true')

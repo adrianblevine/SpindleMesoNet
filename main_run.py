@@ -28,18 +28,18 @@ FLAGS = []
 slide_formats = ['svs', 'tif', 'tiff']
 img_formats = ['jpg', 'tif', 'tiff', 'png']
 
-main_dir = '/projects/pathology_char/pathology_char_results/mesothelioma/'
+main_dir = '/path/to/dir/'
 
 categories = ['benign', 'tumor']
 
 slide_dirs = {
-  'benign': os.path.join(main_dir, 'slides/benign_meso_spin'),
-  'tumor': os.path.join(main_dir, 'slides/malig_meso_sarc'),
+  'benign': '/path/to/dir',
+  'tumor': '/path/to/dir',
   }
 
 slide_lists = {
-  'benign':os.path.join(main_dir, 'lists/train_slides_benign.txt'),
-  'tumor': os.path.join(main_dir, 'lists/train_slides_meso.txt'),
+  'benign':'/path/to/dir',
+  'tumor': '/path/to/dir',
   }
 
 results_main = os.path.join(main_dir, 'results')

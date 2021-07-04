@@ -176,8 +176,6 @@ class Trainer():
                 loss.backward()
                 self.optimizer.step()
             
-            
-
             # statistics
             running_loss += loss.item() * inputs.size(0)
             batches_seen += 1

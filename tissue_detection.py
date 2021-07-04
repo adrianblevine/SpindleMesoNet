@@ -8,7 +8,6 @@ from multiprocessing import Pool
 import functools
 
 import numpy as np
-#import matplotlib; matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from PIL import Image
 Image.MAX_IMAGE_PIXELS = None
@@ -23,31 +22,7 @@ import misc
 
 # ———————————————————————————————————————————————————————————————————
 
-working_dir = '/projects/pathology_char/pathology_char_results/'
-
-
-sample_slides = ['MM_sarc_VR1488_A4.svs',
-              'MM_sarc_VR18_496_B1.svs',
-              'MM_sarc_VR18_67_B1.svs',
-              'MM_sarc_VR18_28_B1.svs',
-              'MM_sarc_VR17_829_B1.svs',
-              'MM_sarc_VR15_1073_B1.svs']
-
-strom_problems = ['MM_sarc_SM14_17157_D2.svs', 
-                  'MM_sarc_VS15_39608_C1.svs',
-                  'MM_sarc_VS15_39608_C4.svs',
-                  'MM_sarc_VS15_39608_B2.svs',
-                  'MM_sarc_VS11_27043_B1.svs',
-                  'MM_sarc_VS11_27043_A3.svs',
-                  'MM_sarc_VR15_791_D1.svs', 
-                  'MM_sarc_VS11_25615_A3.svs',
-                  'MM_sarc_VS11_18879_C2.svs',
-                  'MM_sarc_VS12_14771_A2.svs',
-                  'BM_spin_VS11_22737_C1.svs', 
-                  'BM_spin_VS14_34811_B1.svs',
-                  'BM_spin_VS13_19989_A4.svs',
-                  'BM_spin_VS16_14188_A6.svs',
-                  ]
+working_dir = '/path/to/dir/'
 
 FLAGS=[]
   
@@ -162,7 +137,6 @@ class TissueDetection():
 
     # filling of holes and removal of  objects  having  an  area  
     # smaller  than  100  000  μm2. 
-    # TODO: remove objectes with width < 400 um  
     min_size = round(100000/mpp**2)
     labels, num_labels = ski.measure.label(mask, connectivity=2, 
                                              return_num=True)
@@ -255,7 +229,6 @@ class TissueDetection():
 def process_slide(slide, FLAGS):
     if not os.path.isabs(slide):
       slide = os.path.join(FLAGS.slide_dir, slide)
-    #print('\n{}'.format(os.path.basename(slide)), flush=True)
     try:
       td = TissueDetection(slide)
       td.generate_mask(apply_laplacian=True, make_countour=False)
@@ -285,7 +258,6 @@ def process_slide_list(FLAGS):
     slide_list = [x.replace('txt', 'svs') for x in slide_list] 
   else:
     slide_list = os.listdir(FLAGS.slide_dir)
-  #slide_list = [x for x in strom_problems if x in os.listdir(FLAGS.slide_dir)]
   random.shuffle(slide_list)
   
   if FLAGS.number:
@@ -314,8 +286,7 @@ if __name__ == "__main__":
   parser.add_argument('--overlay', choices=['mask','contour'], default='mask',
         help='Display tissue area as a contoured outline or mask')
   parser.add_argument('--save', choices=['mask', 'image'], default=None)
-  parser.add_argument('--slide_dir', 
-      default= os.path.join('/projects/pathology_char/mesothelioma/slides'))
+  parser.add_argument('--slide_dir') 
   parser.add_argument('--save_dir', 
       default=os.path.join(working_dir, 'tissue_mask_images'))
   parser.add_argument('-n', '--n_workers', type=int, default=1)

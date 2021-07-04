@@ -1,5 +1,8 @@
-""" The multithreading in this script can be quite problematic for a 
-few reasons. Things that have helped
+""" 
+Stain normalization using Vahadane method through staintools package
+
+The multithreading in this script can be quite problematic for a 
+few reasons. Things that have helped:
 - use the staintools environment with an earlier version of numpy
 - try different multiprocess start methods
 - adding the os.environ['OPENBLAS_NUM_THREADS'] = '1' 
@@ -7,7 +10,6 @@ few reasons. Things that have helped
 
 """
 
-#from multiprocessing import set_start_method; set_start_method("spawn")
 import os
 os.environ['OPENBLAS_NUM_THREADS'] = '1'
 import sys
@@ -26,15 +28,10 @@ root_dir = '/path/to/dir'
 
 
 def process_image(image_path, normalizer, export_dir):
-  #print('starting', image_path, flush=True)
   image = np.array(Image.open(image_path))
-  #print('1', flush=True)
   transformed = normalizer.transform(image)
-  #print('2', flush=True)
   transformed = Image.fromarray(transformed)
-  #print('3', flush=True)
   save_path = os.path.join(export_dir, os.path.basename(image_path))
-  #print('4', flush=True)
   transformed.save(save_path)
   print(image_path, save_path, flush=True)
 
@@ -87,10 +84,6 @@ def main(FLAGS):
     else:
       for image_path in image_list:
         process_image(image_path, normalizer, export_dir)
-
-
-    #process_folder(FLAGS.image_dir, FLAGS.export_dir, normalizer, 
-     #              FLAGS.n_workers)
 
 
 if __name__ == "__main__":

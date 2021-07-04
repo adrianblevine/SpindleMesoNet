@@ -16,11 +16,10 @@ from torch.utils import data
 
 import misc
 from pth_models import initialize_model
-#from torchsummary import summary
 
 FLAGS = []
 
-MAIN_DIR = '/home/alevine/mesothelioma/'
+MAIN_DIR = '/path/to/dir/'
 RUNS_MAIN = os.path.join(MAIN_DIR, 'results') 
 
 # ——————————————————————————————————————————————————————————————————————
@@ -45,12 +44,6 @@ def load_model_with_softmax(model_type, run_dir, epoch_weights=None):
   elif model_type.startswith('inception'):
     model = make_inception_model(full_base_model)
   model.eval()
-
-  ## lines previously used to troubleshoot model loading with torchsummary
-  #if torch.cuda.is_available():
-  #  model = model.cuda()
-  #summary(model, (3, 512, 512))
-  
   return model
 
 def make_resnet_model(full_base_model):
@@ -414,7 +407,6 @@ if __name__ == "__main__":
       help='Side dimension for tiles')
   parser.add_argument('--epoch_weights', default=None, type=int,
       help='Train epoch from which saved weights should be loaded.')
-  #parser.add_argument('--batch_size', default=64, type=int)
   parser.add_argument('--n_workers', default=6, type=int)
   parser.add_argument('--benchmark_mode', action='store_true')
 

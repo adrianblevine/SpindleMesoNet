@@ -9,11 +9,11 @@ import numpy as np
 import misc
 from slide_prediction import get_label_from_filename
 
-results_main = '/home/alevine/mesothelioma/results'
+results_main = '/path/to/dir/results'
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--run_id', default='10-23-20-normjit')
-parser.add_argument('--cases_file', default='/home/alevine/mesothelioma/lists/pathologist_test_cases.txt')
+parser.add_argument('--run_id')
+parser.add_argument('--cases_file', default='/path/to/dir/lists/cases.txt')
 parser.add_argument('--most_benign', action='store_true')
 parser.add_argument('--ru', default=None)
 args = parser.parse_args()
@@ -27,13 +27,11 @@ else:
   output_main = os.path.join(results_main, args.run_id, 'top_malignant_imgs')
 
 misc.verify_dir_exists(output_main)
-print('\ntransfer command: scp -r alevine@xfer.bcgsc.ca:{} .\n'.format(
-      output_main))
 
 # define image_folders
 img_dirs = {
-  'benign': '/home/alevine/mesothelioma/images_40x_norm/benign',
-  'tumor': '/home/alevine/mesothelioma/images_40x_norm/tumor_full'}
+  'benign': '/path/to/dir/images/benign',
+  'tumor': '/path/to/dir/images/tumor'}
 
 for case in cases:
   print(case)
